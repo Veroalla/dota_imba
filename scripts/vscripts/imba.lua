@@ -119,7 +119,7 @@ function GameMode:OnHeroInGame(hero)
 	-- Store this hero handle in this table.
 	table.insert(self.vPlayers, hero)
 
-	InitAbilities(hero)
+	--InitAbilities(hero)
 
 	-- Show a popup with game instructions.
     ShowGenericPopupToPlayer(hero.player, "#barebones_instructions_title", "#barebones_instructions_body", "", "", DOTA_SHOWGENERICPOPUP_TINT_SCREEN )
@@ -224,6 +224,11 @@ function GameMode:OnNPCSpawned(keys)
 	PrintTable(keys)
 	local npc = EntIndexToHScript(keys.entindex)
 
+	-- Reaper's Scythe buyback clean-up
+	if npc:IsRealHero() then
+		npc:SetBuyBackDisabledByReapersScythe(false)
+	end
+	
 	if npc:IsRealHero() and npc.bFirstSpawned == nil then
 		npc.bFirstSpawned = true
 		GameMode:OnHeroInGame(npc)
@@ -435,7 +440,10 @@ function GameMode:OnEntityKilled( keys )
 		end
 	end
 
-	-- Put code here to handle when an entity gets killed
+	-- Reaper's Scythe death timer increase
+	if killedUnit.scythe_added_respawn then
+		killedUnit:SetTimeUntilRespawn(killedUnit:GetRespawnTime() + killedUnit.scythe_added_respawn)
+	end
 end
 
 
