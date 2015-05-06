@@ -481,13 +481,14 @@ function OnABoat( keys )
 		should_stun = 1,
 		knockback_duration = duration,
 		duration = duration,
-		knockback_distance = len,
+		knockback_distance = -len,
 		knockback_height = 0,
-		center_x = spawnPoint.x,
-		center_y = spawnPoint.y,
-		center_z = spawnPoint.z
+		center_x = impactPoint.x,
+		center_y = impactPoint.y,
+		center_z = impactPoint.z
 	}
 	if target:GetTeam() ~= caster:GetTeam() then
+		target:RemoveModifierByName("modifier_knockback")
 		target:AddNewModifier( caster, nil, "modifier_knockback", knockbackModifierTable )
 		ApplyDamage({victim = target, attacker = caster, damage = 50, damage_type = DAMAGE_TYPE_PURE})
 	end
