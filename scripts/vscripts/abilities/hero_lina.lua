@@ -1,6 +1,16 @@
 --[[ 	Author: D2imba
 		Date: 26.04.2015	]]
 
+function DragonSlaveLevel( keys )
+	local caster = keys.caster
+	local ability = keys.ability
+	local ability_name = keys.ability_name
+	local ability_aux = caster:FindAbilityByName(ability_name)
+
+	local level = ability:GetLevel()
+	ability_aux:SetLevel(level)
+end
+
 function DragonSlave( keys )
 	local caster = keys.caster
 	local ability = caster:FindAbilityByName(keys.ability_name)
@@ -193,6 +203,10 @@ function FierySoulActivate( keys )
 	if caster:GetModifierStackCount("modifier_imba_fiery_soul", ability) < max_stacks then
 		return
 	end
+
+	-- Play the sound
+	local activate_sound = keys.activate_sound
+	caster:EmitSound(activate_sound)
 
 	-- Fetch the skill names
 	local dragon_slave = keys.dragon_slave

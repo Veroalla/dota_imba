@@ -195,12 +195,12 @@
 	{
 		"override_hero"				"npc_dota_hero_kunkka"
 		
-	//	"Ability1"					"imba_kunkka_torrent"		
-	//	"Ability2"					"imba_kunkka_tidebringer"	
-	//	"Ability3"					"imba_kunkka_x_marks_the_spot"
-	//	"Ability4"					"imba_kunkka_ghostship"		
+		"Ability1"					"imba_kunkka_torrent"		
+		"Ability2"					"imba_kunkka_tidebringer"	
+		"Ability3"					"imba_kunkka_x_marks_the_spot"
+		"Ability4"					"imba_kunkka_ghostship"		
 		"Ability5"					"attribute_bonus_str"
-	//	"Ability6"					"imba_kunkka_return"				
+		"Ability6"					"imba_kunkka_return"				
 		
 	}
 
@@ -239,6 +239,7 @@
 		"Ability4"					"imba_lina_laguna_blade"
 		"Ability5"					"attribute_bonus_int"
 		"Ability6"					"imba_lina_dragon_slave_aux"
+		"Ability7"					"imba_lina_dragon_slave_aux_fiery"
 	}
 
 	//=================================================================================================================
@@ -439,6 +440,8 @@
 	//	"Ability3"					"imba_sniper_take_aim"
 	//	"Ability4"					"imba_sniper_assassinate"
 		"Ability5"					"attribute_bonus_agi"
+
+		"AttributeAgilityGain"		"2.5"
 	}
 
 	//=================================================================================================================
