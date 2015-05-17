@@ -48,7 +48,7 @@ function DeathCoil( keys )
 			target:SetModifierStackCount(modifier_debuff, ability, 1)
 		end
 	else
-		target:Heal( heal, caster)
+		target:Heal(heal, caster)
 		if target:HasModifier(modifier_buff_base) then
 			local stack_count = target:GetModifierStackCount(modifier_buff, ability)
 
@@ -117,7 +117,7 @@ function AphoticShield( keys )
 		local ability_level = ability:GetLevel() - 1
 		local shield_modifier = keys.shield_modifier
 		local cast_sound = keys.cast_sound
-		local strength = caster.GetStrength(caster)
+		local strength = caster:GetStrength()
 		local base_damage_absorb = keys.ability:GetLevelSpecialValueFor("damage_absorb", ability_level)
 		local max_damage_absorb = base_damage_absorb + strength
 		local shield_size = target:GetModelRadius() * 0.7
@@ -177,7 +177,8 @@ function AphoticShieldStartCooldown( caster, ability, stacks_modifier, max_charg
 	if caster.aphotic_cooldown <= 0 then
 		local current_charges = caster:GetModifierStackCount(stacks_modifier, caster)
 		caster:SetModifierStackCount(stacks_modifier, caster, current_charges + 1 )
-		if caster:GetModifierStackCount(stacks_modifier, caster) == max_charges then
+		if caster:GetModifierStackCount(stacks_modifier, caster) >= max_charges then
+			caster:SetModifierStackCount(stacks_modifier, caster, max_charges)
 			return
 		else
 			AphoticShieldStartCooldown(caster, ability, stacks_modifier, max_charges, charge_cooldown, charge_cooldown)
@@ -398,6 +399,9 @@ function BorrowedTimePurge( keys )
 	else
 		ability:ApplyDataDrivenModifier( caster, caster, "modifier_borrowed_time", { duration = duration })
 	end
+
+	-- Toggle the ability off
+	ability:ToggleAbility()
 end
 
 function BorrowedTimeAllies( keys )

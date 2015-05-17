@@ -504,3 +504,40 @@ function RemoveStacks(ability, unit, modifier, stack_amount)
 	end
 end
 
+-- Switches one skill with another
+function SwitchAbilities(hero, added_ability_name, removed_ability_name, keep_level, keep_cooldown)
+	local removed_ability = hero:FindAbilityByName(removed_ability_name)
+	local level = removed_ability:GetLevel()
+	local cooldown = removed_ability:GetCooldownTimeRemaining()
+	hero:RemoveAbility(removed_ability_name)
+	hero:AddAbility(added_ability_name)
+	local added_ability = hero:FindAbilityByName(added_ability_name)
+	
+	if keep_level then
+		added_ability:SetLevel(level)
+	end
+	
+	if keep_cooldown then
+		added_ability:StartCooldown(cooldown)
+	end
+end
+
+-- Removes unwanted passive modifiers from illusions upon their creation
+function IllusionPassiveRemover( keys )
+	local target = keys.target
+	local modifier = keys.modifier
+
+	if target:IsIllusion() then
+		target:RemoveModifierByName(modifier)
+	end
+end
+
+function ApplyDataDrivenModifierWhenPossible( caster, target, ability, modifier_name)
+	Timers:CreateTimer(0, function()
+		if target:IsOutOfGame() or target:IsInvulnerable() then
+			return 0.1
+		else
+			ability:ApplyDataDrivenModifier(caster, target, modifier_name, {})
+		end			
+	end)
+end
