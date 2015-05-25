@@ -1,3 +1,6 @@
+--[[ 	Author: D2imba
+		Date: 27.04.2015	]]
+		
 function DeathPulse( keys )
 	local caster = keys.caster
 	local ability = keys.ability
@@ -54,9 +57,9 @@ function Heartstopper( keys )
 	local stack_count = target:GetModifierStackCount(stack_modifier, ability)
 	damage = damage * max_hp * ( 1 + stack_power * stack_count / 100 ) / 100
 	
-	-- Damage is dealt by modifying the target's HP directly (HP removal). Deals 1 pure damage to kill targets when appropriate
+	-- Damage is dealt by modifying the target's HP directly (HP removal). Kills targets directly when appropriate
 	if target:GetHealth() <= damage then
-		ApplyDamage({attacker = caster, victim = target, ability = ability, damage = damage, damage_type = DAMAGE_TYPE_PURE})
+		target:Kill(ability, caster)
 	else
 		target:SetHealth(target:GetHealth() - damage)
 	end
@@ -161,6 +164,11 @@ function ReapersScythe( keys )
 		local damage_bonus = 1 - target:GetHealth() / target:GetMaxHealth() 
 		damage = damage * target:GetMaxHealth() * (1 + damage_bonus) / 100
 		ApplyDamage({attacker = caster, victim = target, ability = ability, damage = damage, damage_type = DAMAGE_TYPE_PURE})
+
+		-- If the target is at 1 HP (i.e. only alive due to the Reaper's Scythe debuff), kill it
+		if target:GetHealth() <= 1 then
+			target:Kill(ability, caster)
+		end
 
 		-- Checking if target is alive to decide if it needs to increase respawn time
 		if not target:IsAlive() then

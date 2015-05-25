@@ -416,7 +416,7 @@
 		"BaseClass"										"ability_datadriven"
 		"AbilityBehavior"								"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetTeam"							"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityUnitTargetType"							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetType"							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_BUILDING"
 		"AbilityUnitTargetFlags"						"DOTA_UNIT_TARGET_FLAG_NOT_MAGIC_IMMUNE_ALLIES"
 		"SpellImmunityType"								"SPELL_IMMUNITY_ALLIES_NO"
 		"FightRecapLevel"								"1"
@@ -533,6 +533,8 @@
 				"IsPurgable"							"0"
 				"IsBuff"								"1"
 				"IsHidden"								"0"
+
+				"Attributes"							"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
 
 				"OnCreated"
 				{
@@ -1044,7 +1046,7 @@
 
 		// Stats
 		//----------------------------------------------------------------------------------------
-		"AbilityCooldown"			"16.0"
+		"AbilityCooldown"			"20.0"
 		"AbilityCastPoint"			"0.0"
 		
 		// Special
@@ -1444,9 +1446,9 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"precache"
 		{
-			"soundfile"			"soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
-			"particle"			"particles/units/heroes/hero_axe/axe_battle_hunger.vpcf"
-			"particle"			"particles/status_fx/status_effect_battle_hunger.vpcf"
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_axe.vsndevts"
+			"particle"					"particles/units/heroes/hero_axe/axe_battle_hunger.vpcf"
+			"particle"					"particles/status_fx/status_effect_battle_hunger.vpcf"
 		}	
 
 		// Casting
@@ -1479,13 +1481,13 @@
 		{
 			"01"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"slow"						"-12"
+				"var_type"				"FIELD_INTEGER"
+				"slow"					"-12"
 			}
 			"02"
 			{
-				"var_type"					"FIELD_INTEGER"
-				"speed_bonus"				"12"
+				"var_type"				"FIELD_INTEGER"
+				"speed_bonus"			"12"
 			}
 		}	
 
@@ -1780,8 +1782,8 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"precache"
 		{
-			"soundfile"		"soundevents/game_sounds_heroes/game_sounds_bane.vsndevts"		
-			"particle"		"particles/units/heroes/hero_bane/bane_enfeeble.vpcf"		
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_bane.vsndevts"		
+			"particle"					"particles/units/heroes/hero_bane/bane_enfeeble.vpcf"		
 		}	
 
 		// Casting
@@ -2794,9 +2796,9 @@
 		//-------------------------------------------------------------------------------------------------------------
 		"precache"
 		{
-		  "soundfile"   "soundevents/game_sounds_heroes/game_sounds_bounty_hunter.vsndevts"
-		  "particle"	"particles/units/heroes/hero_bounty_hunter/bounty_hunter_windwalk.vpcf"
-		  "particle"	"particles/generic_hero_status/status_invisibility_start.vpcf"
+		  "soundfile"   				"soundevents/game_sounds_heroes/game_sounds_bounty_hunter.vsndevts"
+		  "particle"					"particles/units/heroes/hero_bounty_hunter/bounty_hunter_windwalk.vpcf"
+		  "particle"					"particles/generic_hero_status/status_invisibility_start.vpcf"
 		}	
 
 		// Time		
@@ -3602,6 +3604,8 @@
 				"IsHidden"					"1"
 				"IsPurgable"				"0"
 				"IsDebuff"					"1"
+
+				"Attributes"				"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
 			}
 		}
 	}
@@ -4275,6 +4279,8 @@
 			{
 				"Passive"								"1"
 				"IsPurgable"							"0"
+
+				"Attributes"							"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
 				
 				"OnCreated"
 				{
@@ -4327,12 +4333,16 @@
 				"IsPurgable"							"0"
 				"AllowIllusionDuplicate"				"0"
 
+				"Attributes"							"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
+
 				"OnDestroy"
-				{
-					"ApplyModifier"
+				{	
+					"RunScript"
 					{
-						"ModifierName"					"modifier_imba_frostbite_passive"
-						"Target" 						"CASTER"
+						"ScriptFile"					"abilities/hero_crystal_maiden"
+						"Function"						"FrostbitePassive"
+
+						"modifier_passive"				"modifier_imba_frostbite_passive"
 					}
 				}
 			}
@@ -4566,7 +4576,6 @@
 				"Function"								"FreezingFieldCast"
 
 				"modifier_aura"							"modifier_imba_freezing_field_caster"
-				"modifier_aura_scepter"					"modifier_imba_freezing_field_caster_scepter"
 				"modifier_sector_0"						"modifier_imba_freezing_field_northwest"
 				"modifier_sector_1"						"modifier_imba_freezing_field_northeast"
 				"modifier_sector_2"						"modifier_imba_freezing_field_southeast"
@@ -4616,48 +4625,55 @@
 		}
 		
 		"OnChannelFinish"
-		{
-			"RemoveModifier"
+		{	
+			"RunScript"
 			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_caster"
-			}
+				"ScriptFile"							"abilities/hero_crystal_maiden.lua"
+				"Function"								"FreezingFieldEnd"
 
-			"RemoveModifier"
-			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_caster_scepter"
-			}
-			
-			// Remove 4 modifiers, one for each section
-			
-			"RemoveModifier"
-			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_northeast"
-			}
-			
-			"RemoveModifier"
-			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_northwest"
-			}
-			
-			"RemoveModifier"
-			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_southwest"
-			}
-			
-			"RemoveModifier"
-			{
-				"Target"								"CASTER"
-				"ModifierName"							"modifier_imba_freezing_field_southeast"
+				"modifier_aura"							"modifier_imba_freezing_field_caster"
+				"modifier_NE"							"modifier_imba_freezing_field_northeast"
+				"modifier_NW"							"modifier_imba_freezing_field_northwest"
+				"modifier_SW"							"modifier_imba_freezing_field_southwest"
+				"modifier_SE"							"modifier_imba_freezing_field_southeast"
 			}
 		}
 		
 		"Modifiers"
-		{
+		{	
+			"modifier_imba_freezing_field_scepter_check"
+			{
+				"Passive"								"1"
+				"IsHidden"								"1"
+				"IsPurgable"							"0"
+
+				"ThinkInterval"  						"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"ScepterCheck"
+
+						"modifier"						"modifier_imba_freezing_field_scepter_check"
+						"skill_name"					"imba_crystal_maiden_freezing_field"
+						"scepter_skill_name"			"imba_crystal_maiden_freezing_field_scepter"
+					}
+				}
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"util.lua"
+						"Function"						"IllusionPassiveRemover"
+
+						"modifier"						"modifier_imba_freezing_field_scepter_check"
+					}
+				}
+			}
+
 			"modifier_imba_freezing_field_caster"
 			{
 				"IsHidden"								"1"
@@ -4680,45 +4696,6 @@
 						"EffectAttachType"				"follow_origin"
 						"EffectRadius"					"%radius"
 					}
-				}
-			}
-
-			"modifier_imba_freezing_field_caster_scepter"
-			{
-				"IsHidden"								"1"
-				"OverrideAnimation"						"ACT_DOTA_CHANNEL_ABILITY_4"
-				
-				"Aura"									"modifier_imba_freezing_field_debuff_scepter"
-				"Aura_Radius"							"%radius"
-				"Aura_Teams"							"DOTA_UNIT_TARGET_TEAM_ENEMY"
-				"Aura_Types"							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-				"Aura_Flags"							"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
-				
-				"Duration"								"%AbilityDuration"
-
-				"EffectName"							"particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
-				
-				"OnCreated"
-				{
-					"AttachEffect"
-					{
-						"Target"						"CASTER"
-						"EffectName"					"particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf"
-						"EffectAttachType"				"follow_origin"
-						"EffectRadius"					"%radius"
-					}
-				}
-
-				"Properties"
-				{
-					"MODIFIER_PROPERTY_MAGICAL_RESISTANCE_BONUS" 	"100"
-				}
-
-				"States"
-				{
-					"MODIFIER_STATE_MAGIC_IMMUNE"		"MODIFIER_STATE_VALUE_ENABLED"
-					"MODIFIER_STATE_ATTACK_IMMUNE"		"MODIFIER_STATE_VALUE_ENABLED"
-					"MODIFIER_STATE_NO_HEALTH_BAR"		"MODIFIER_STATE_VALUE_ENABLED"
 				}
 			}
 			
@@ -4811,7 +4788,356 @@
 				}
 			}
 
-			"modifier_imba_freezing_field_debuff_scepter"
+			"modifier_imba_frostbite_root"
+			{
+				"IsPurgable"							"1"
+				"IsDebuff"								"1"
+				"TextureName"							"crystal_maiden_frostbite"
+			
+				"EffectName"							"particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+			
+				"States"
+				{
+					"MODIFIER_STATE_ROOTED"				"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_INVISIBLE"			"MODIFIER_STATE_VALUE_DISABLED"
+					"MODIFIER_STATE_DISARMED"			"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Crystal Maiden's Freezing Field (Scepter version)
+	//=================================================================================================================
+	"imba_crystal_maiden_freezing_field_scepter"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"										"ability_datadriven"
+		"AbilityType"									"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityBehavior"								"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+		"AbilityUnitDamageType"							"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"								"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"								"2"
+		"AbilityTextureName"							"crystal_maiden_freezing_field"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"								"1200"
+		"AbilityChannelTime"							"10.0"
+		"AbilityCastPoint"								"0.2"
+		"AOERadius"										"%radius"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"								"90"
+		"AbilityDuration"								"10.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"								"200 400 600"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"					"0.35"	// Primarily about the damage
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"radius"								"1000"
+			}
+		
+			"02"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"explosion_radius"						"300 325 350"
+			}
+			"04"
+			{
+				"var_type"								"FIELD_FLOAT"
+				"explosion_interval"					"0.1"
+			}
+			"05"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"movespeed_slow"						"-30 -40 -50"
+			}
+			"06"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"attack_slow"							"-40 -60 -80"
+			}
+			"07"
+			{
+				"var_type"								"FIELD_FLOAT"
+				"slow_duration"							"1.0"
+			}
+			"08"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"explosion_min_dist"					"200"
+			}
+			"09"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"explosion_max_dist"					"800"
+			}
+			"10"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"damage"								"110 180 250"
+			}
+			"11"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"damage_scepter"						"180 250 320"
+			}
+			"12"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"movespeed_slow_scepter" 				"-60"
+			}
+			"13"
+			{
+				"var_type"								"FIELD_INTEGER"
+				"attack_slow_scepter"					"-100"
+			}
+			"14"
+			{
+				"var_type"								"FIELD_FLOAT"
+				"frostbite_duration"					"1.0 1.4 1.8"
+			}
+			"15"
+			{
+				"var_type"								"FIELD_FLOAT"
+				"stun_duration"							"0.1"
+			}
+		}
+		
+		// Data driven
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"									"soundevents/game_sounds_heroes/game_sounds_crystalmaiden.vsndevts"
+			"particle"									"particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf"
+			"particle"									"particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_explosion.vpcf"
+			"particle"									"particles/generic_gameplay/generic_slowed_cold.vpcf"
+			"particle"									"particles/status_fx/status_effect_frost_lich.vpcf"
+			"particle"									"particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf"
+		}
+		
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"Target"								"POINT"
+				"EffectName"							"hero_Crystal.freezingField.wind"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"							"abilities/hero_crystal_maiden.lua"
+				"Function"								"FreezingFieldCast"
+				"Target"								"POINT"
+
+				"modifier_aura"							"modifier_imba_freezing_field_aura"
+				"modifier_sector_0"						"modifier_imba_freezing_field_northwest"
+				"modifier_sector_1"						"modifier_imba_freezing_field_northeast"
+				"modifier_sector_2"						"modifier_imba_freezing_field_southeast"
+				"modifier_sector_3"						"modifier_imba_freezing_field_southwest"
+			}
+			
+			"TrackingProjectile"
+			{
+				"Target"
+				{
+					"Center"  							"POINT"
+					"Radius" 							"%radius"
+					"Teams" 							"DOTA_UNIT_TARGET_TEAM_ENEMY"
+					"Types" 							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+				}
+
+				"EffectName"							"particles/units/heroes/hero_crystalmaiden/maiden_frostbite.vpcf"
+				"MoveSpeed"								"2000"
+			}
+		
+			"Stun"
+			{
+				"Target"
+				{
+					"Center"  							"POINT"
+					"Radius" 							"%radius"
+					"Teams" 							"DOTA_UNIT_TARGET_TEAM_ENEMY"
+					"Types" 							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+				}
+
+				"Duration"								"%stun_duration"
+			}
+			
+			"ApplyModifier"
+			{
+				"Target"
+				{
+					"Center"  							"POINT"
+					"Radius" 							"%radius"
+					"Teams" 							"DOTA_UNIT_TARGET_TEAM_ENEMY"
+					"Types" 							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+				}
+
+				"ModifierName"							"modifier_imba_frostbite_root"
+				"Duration"								"%frostbite_duration"
+			}
+		}
+		
+		"OnChannelFinish"
+		{	
+			"RunScript"
+			{
+				"ScriptFile"							"abilities/hero_crystal_maiden.lua"
+				"Function"								"FreezingFieldEnd"
+
+				"modifier_aura"							"modifier_imba_freezing_field_aura"
+				"modifier_caster"						"modifier_imba_freezing_field_caster"
+				"modifier_NE"							"modifier_imba_freezing_field_northeast"
+				"modifier_NW"							"modifier_imba_freezing_field_northwest"
+				"modifier_SW"							"modifier_imba_freezing_field_southwest"
+				"modifier_SE"							"modifier_imba_freezing_field_southeast"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_imba_freezing_field_scepter_check"
+			{
+				"Passive"								"1"
+				"IsHidden"								"1"
+				"IsPurgable"							"0"
+
+				"ThinkInterval"  						"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"ScepterLostCheck"
+
+						"modifier"						"modifier_imba_freezing_field_scepter_check"
+						"skill_name"					"imba_crystal_maiden_freezing_field"
+						"scepter_skill_name"			"imba_crystal_maiden_freezing_field_scepter"
+					}
+				}
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"util.lua"
+						"Function"						"IllusionPassiveRemover"
+
+						"modifier"						"modifier_imba_freezing_field_scepter_check"
+					}
+				}
+			}
+
+			"modifier_imba_freezing_field_caster"
+			{
+				"IsHidden"								"1"
+				"OverrideAnimation"						"ACT_DOTA_CHANNEL_ABILITY_4"
+
+				"Duration"								"%AbilityDuration"
+			}
+
+			"modifier_imba_freezing_field_aura"
+			{
+				"IsHidden"								"1"
+
+				"Aura"									"modifier_imba_freezing_field_debuff"
+				"Aura_Radius"							"%radius"
+				"Aura_Teams"							"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"Aura_Types"							"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+				"Aura_Flags"							"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+				
+				"Duration"								"%AbilityDuration"
+			}
+			
+			"modifier_imba_freezing_field_northwest"
+			{
+				"IsHidden"								"1"
+				"ThinkInterval"							"%explosion_interval * 4"
+				
+				"Duration"								"%AbilityDuration"
+				
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"FreezingFieldExplode"
+						"section"						"0"
+					}
+				}
+			}
+			
+			"modifier_imba_freezing_field_northeast"
+			{
+				"IsHidden"								"1"
+				"ThinkInterval"							"%explosion_interval * 4"
+				
+				"Duration"								"%AbilityDuration"
+				
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"FreezingFieldExplode"
+						"section"						"1"
+					}
+				}
+			}
+			
+			"modifier_imba_freezing_field_southeast"
+			{
+				"IsHidden"								"1"
+				"ThinkInterval"							"%explosion_interval * 4"
+				
+				"Duration"								"%AbilityDuration"
+				
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"FreezingFieldExplode"
+						"section"						"2"
+					}
+				}
+			}
+			
+			"modifier_imba_freezing_field_southwest"
+			{
+				"IsHidden"								"1"
+				"ThinkInterval"							"%explosion_interval * 4"
+				
+				"Duration"								"%AbilityDuration"
+				
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_crystal_maiden.lua"
+						"Function"						"FreezingFieldExplode"
+						"section"						"3"
+					}
+				}
+			}
+			
+			"modifier_imba_freezing_field_debuff"
 			{
 				"IsDebuff"								"1"
 				"IsPurgable"							"1"
@@ -4956,7 +5282,7 @@
 			"12"
 			{
 				"var_type"								"FIELD_INTEGER"
-				"tooltip_damage"						"16 24 32 40"
+				"tooltip_damage"						"20 30 40 50"
 			}
 			"13"
 			{
@@ -5387,7 +5713,7 @@
 			"02"
 			{	
 				"var_type"								"FIELD_INTEGER"
-				"range_tooltip"							"550 700 850 1000"
+				"range_tooltip"							"600 800 1000 1200"
 			}
 			"03"
 			{
@@ -5607,7 +5933,7 @@
 			"06"
 			{
 				"var_type"								"FIELD_FLOAT"
-				"armor_reduction"						"-0.5 -1.0 -1.5 -2.0"
+				"armor_reduction"						"-0.8 -1.2 -1.6 -2.0"
 			}
 			"07"
 			{
@@ -6836,7 +7162,7 @@
 		
 		// Casting
 		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastRange"						"1100"
+		"AbilityCastRange"						"1050"
 		"AbilityCastPoint"						"0.3"
 
 		// Time		
@@ -6869,7 +7195,7 @@
 			"04"
 			{
 				"var_type"						"FIELD_INTEGER"
-				"attack_slow"					"-50"
+				"attack_slow"					"-20"
 			}
 			"05"
 			{
@@ -7242,7 +7568,7 @@
 			"02"
 			{
 				"var_type"								"FIELD_INTEGER"
-				"movement_speed_bonus"					"10 14 18"
+				"movement_speed_bonus"					"10"
 			}
 			"03"
 			{
@@ -7257,7 +7583,7 @@
 			"05"
 			{
 				"var_type"								"FIELD_INTEGER"
-				"radius"								"275"
+				"radius"								"300"
 			}
 			"06"
 			{
@@ -7267,7 +7593,7 @@
 			"07"
 			{
 				"var_type"								"FIELD_INTEGER"
-				"agility_bonus_scepter"					"80 140 200"
+				"agility_bonus_scepter"					"70 125 180"
 			}
 			"08"
 			{
@@ -7288,25 +7614,25 @@
 		{
 			"RemoveModifier"
 			{
-				"ModifierName"	"modifier_imba_marksmanship_effect"
-				"Target" 		"CASTER"
+				"ModifierName"					"modifier_imba_marksmanship_effect"
+				"Target" 						"CASTER"
 			}
 
 			"RemoveModifier"
 			{
-				"ModifierName"	"modifier_imba_marksmanship_effect_scepter"
-				"Target" 		"CASTER"
+				"ModifierName"					"modifier_imba_marksmanship_effect_scepter"
+				"Target" 						"CASTER"
 			}
 
 			"RunScript"
 			{
-				"ScriptFile"	"abilities/hero_drow_ranger.lua"
-				"Function"		"UpgradeFrostArrows"
+				"ScriptFile"					"abilities/hero_drow_ranger.lua"
+				"Function"						"UpgradeFrostArrows"
 
-				"ability_0"		"imba_drow_ranger_frost_arrows"
-				"ability_1"		"imba_drow_ranger_frost_arrows_mark1"
-				"ability_2"		"imba_drow_ranger_frost_arrows_mark2"
-				"ability_3"		"imba_drow_ranger_frost_arrows_mark3"
+				"ability_0"						"imba_drow_ranger_frost_arrows"
+				"ability_1"						"imba_drow_ranger_frost_arrows_mark1"
+				"ability_2"						"imba_drow_ranger_frost_arrows_mark2"
+				"ability_3"						"imba_drow_ranger_frost_arrows_mark3"
 			}
 		}
 		
@@ -7814,6 +8140,11 @@
 				"var_type"				"FIELD_FLOAT"
 				"duration"				"5.0"
 			}
+			"08"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"turn_slow"				"-20 -30 -40 -50"
+			}
 		}
 		
 		// Data driven
@@ -7941,6 +8272,7 @@
 				"Properties"
 				{
 					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%slow_attack_speed_pct"
+					"MODIFIER_PROPERTY_TURN_RATE_PERCENTAGE"		"%turn_slow"
 				}
 			}
 		}
@@ -8219,15 +8551,6 @@
 
 				"Duration"					"%duration"
 
-				"OnCreated"
-				{
-					"DestroyTrees"
-					{
-						"Target"			"TARGET"
-						"Radius"			"%path_radius"
-					}
-				}
-
 				"OnDestroy"
 				{
 					"RunScript"
@@ -8505,10 +8828,10 @@
 				{
 					"RunScript"
 					{
-						"ScriptFile"	"util.lua"
-						"Function"		"IllusionPassiveRemover"
+						"ScriptFile"			"util.lua"
+						"Function"				"IllusionPassiveRemover"
 
-						"modifier"		"modifier_imba_tidebringer_cooldown"
+						"modifier"				"modifier_imba_tidebringer_cooldown"
 					}
 				}
 
@@ -9471,37 +9794,42 @@
 			"05"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_interval"		"2.5 1.67 1.25 1.0"
+				"stack_interval"		"1.0"
 			}
 			"06"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"damage_per_stack"		"5"
+				"slow_per_stack"		"-3"
 			}
 			"07"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"slow_per_stack"		"-5"
+				"var_type"				"FIELD_FLOAT"
+				"chance_per_stack"		"1.0 1.5 2.0 2.5"
 			}
 			"08"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"chance_per_stack"		"5"
+				"aura_aoe"				"650"
 			}
 			"09"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"aura_aoe"				"800"
+				"target_damage"			"0 70 140 210"
 			}
 			"10"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"stack_tooltip"			"0.4 0.6 0.8 1.0"
+				"aura_stickyness"		"2.0"
 			}
 			"11"
 			{
 				"var_type"				"FIELD_INTEGER"
-				"target_damage"			"0 70 140 210"
+				"base_slow"				"-7"
+			}
+			"12"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"tooltip_base_slow"		"-10"
 			}
 		}	
 
@@ -9626,15 +9954,6 @@
 					}
 				}
 
-				"OnDestroy"
-				{
-					"RemoveModifier"
-					{
-						"ModifierName"	"modifier_imba_frost_nova_stacks"
-						"Target" 		"TARGET"
-					}
-				}
-
 				"ThinkInterval"  		"%stack_interval"
 
 				"OnIntervalThink"
@@ -9650,6 +9969,12 @@
 						"sound"			"Ability.FrostNova"
 					}
 				}
+
+				"Properties"
+				{	
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%base_slow"
+				    "MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%base_slow" 
+				}
 			}
 
 			"modifier_imba_frost_nova_stacks"
@@ -9657,6 +9982,8 @@
 				"IsDebuff"				"1"
 				"IsHidden"				"0"
 				"IsPurgable"			"0"
+
+				"Duration"				"%aura_stickyness"
 
 				"EffectName"			"particles/units/heroes/hero_tusk/tusk_frozen_sigil_status.vpcf"
 
@@ -9902,14 +10229,8 @@
 		    {
 		        "ScriptFile"			"abilities/hero_lich.lua"
 		        "Function"				"DarkRitual"
-		        
-		        "Target"
-		        {
-		        	"Center"  			"TARGET"
-		        	"Radius" 			"%xp_radius"
-		        	"Teams" 			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		        	"Types" 			"DOTA_UNIT_TARGET_HERO"
-			    }
+
+		        "Target"				"TARGET"
 		    }
 		}
 	}
@@ -12007,6 +12328,11 @@
 				"var_type"				"FIELD_FLOAT"
 				"leap_time"				"0.5"
 			}
+			"09"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"disjoint_duration"		"0.1"
+			}
 		}	
 
 		"OnSpellStart"
@@ -12023,7 +12349,15 @@
 				"Function"				"Leap"
 
 				"Target"				"POINT"
-			}	
+				"root_modifier"			"modifier_imba_leap_self_root"
+			}
+
+			"ApplyModifier"
+			{
+				"ModifierName"			"modifier_invisible"
+				"Target"				"CASTER"
+				"Duration"				"%disjoint_duration"
+			}
 
 			"ActOnTargets"
 			{
@@ -12086,6 +12420,18 @@
 					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%leap_speedbonus"
 				}
 			}
+
+			"modifier_imba_leap_self_root"
+			{
+				"IsHidden"				"1"
+				"IsPurgable"			"0"
+				"IsDebuff"				"1"
+
+				"States"
+				{
+					"MODIFIER_STATE_ROOTED"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
 		}
 	}
 
@@ -12133,7 +12479,7 @@
 			"01"
 			{
 				"var_type"				"FIELD_FLOAT"
-				"fade_delay"			"2.0 1.0 0.5"
+				"fade_delay"			"1.1 0.8 0.5"
 			}
 			"02"
 			{
@@ -12954,10 +13300,3078 @@
 					}
 				}
 
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MIN_HEALTH" 					"1"
+				    "MODIFIER_PROPERTY_DISABLE_HEALING" 			"1" 
+				}
+
 				"States"
 				{
 					"MODIFIER_STATE_STUNNED"		"MODIFIER_STATE_VALUE_ENABLED"
 				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Night Stalker's Void
+	//=================================================================================================================
+	"imba_night_stalker_void"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		
+		// Unit Targeting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"night_stalker_void"
+		
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"600"
+		"AbilityCastPoint"				"0.2"
+		"AbilityCooldown"				"8"
+		"AbilityManaCost"				"80 90 100 110"
+		"AbilityDamage"					"120 200 280 360"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+			"particle"					"particles/units/heroes/hero_night_stalker/nightstalker_void.vpcf"
+			"particle"					"particles/generic_gameplay/generic_stunned.vpcf"
+		}
+			
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.5"	// applies 2 modifiers
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration_day"			"2.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration_night"		"4.0"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"movespeed_slow"		"-60"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"attackspeed_slow"		"-60"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"mini_stun"				"0.1"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"vision_loss"			"-175 -250 -325 -400"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Hero_Nightstalker.Void"
+				"Target"				"TARGET"
+			}
+
+			"Stun"
+			{
+				"Target"				"TARGET"
+				"Duration"				"%mini_stun"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"			"abilities/hero_night_stalker.lua"
+				"Function"				"Void"
+				"modifier"				"modifier_imba_void"
+			}
+
+			"Damage"
+			{
+				"Target"				"TARGET"
+				"Type"					"DAMAGE_TYPE_MAGICAL"
+				"Damage"				"%AbilityDamage"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_void"
+			{
+				"IsDebuff"				"1"
+				"IsPurgable"			"1"
+
+				"EffectName"			"particles/units/heroes/hero_night_stalker/nightstalker_void.vpcf"
+				"EffectAttachType"		"follow_origin"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"		"%movespeed_slow"
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"		"%attackspeed_slow"
+					"MODIFIER_PROPERTY_BONUS_DAY_VISION"				"%vision_loss"
+					"MODIFIER_PROPERTY_BONUS_NIGHT_VISION"				"%vision_loss"
+				}
+
+				"States"
+				{
+					"MODIFIER_STATE_PROVIDES_VISION"					"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Night Stalker's Crippling Fear
+	//=================================================================================================================
+	"imba_night_stalker_crippling_fear"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"night_stalker_crippling_fear"
+		
+		// Unit Targeting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"600"
+		"AbilityCastPoint"				"0.2"
+		"AbilityCooldown"				"12"
+		"AbilityManaCost"				"50"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+			"particle"					"particles/units/heroes/hero_night_stalker/nightstalker_crippling_fear.vpcf"
+		}
+			
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration_day"			"3.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration_night"		"5.0 6.0 7.0 8.0"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"miss_rate_day"			"20"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"miss_rate_night"		"60"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Hero_Nightstalker.Trickling_Fear"
+				"Target"				"TARGET"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"			"abilities/hero_night_stalker.lua"
+				"Function"				"CripplingFear"
+
+				"modifier_day"			"modifier_imba_crippling_fear_day"
+				"modifier_night"		"modifier_imba_crippling_fear_night"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_crippling_fear_day"
+			{
+				"Duration"				"%duration_day"
+				"IsDebuff"				"1"
+				"IsPurgable"			"1"
+
+				"EffectName"			"particles/units/heroes/hero_night_stalker/nightstalker_crippling_fear.vpcf"
+				"EffectAttachType"		"follow_overhead"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MISS_PERCENTAGE"		"%miss_rate_day"
+				}
+
+				"States"
+				{
+					"MODIFIER_STATE_SILENCED"				"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+
+			"modifier_imba_crippling_fear_night"
+			{
+				"Duration"				"%duration_night"
+				"IsDebuff"				"1"
+				"IsPurgable"			"1"
+
+				"EffectName"			"particles/units/heroes/hero_night_stalker/nightstalker_crippling_fear.vpcf"
+				"EffectAttachType"		"follow_overhead"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MISS_PERCENTAGE"		"%miss_rate_night"
+				}
+
+				"States"
+				{
+					"MODIFIER_STATE_SILENCED"				"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_MUTED"					"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Night Stalker's Hunter in the Night
+	//=================================================================================================================
+	"imba_night_stalker_hunter_in_the_night"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"			"night_stalker_hunter_in_the_night"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"particle"					"particles/units/heroes/hero_night_stalker/nightstalker_night_buff.vpcf"
+			"particle"					"particles/units/heroes/hero_night_stalker/nightstalker_change.vpcf"
+			"model"						"models/heroes/nightstalker/nightstalker_night.vmdl"
+		}
+			
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"							"FIELD_INTEGER"
+				"bonus_movement_speed_pct_night"	"24 28 32 36"
+			}
+			"02"
+			{
+				"var_type"							"FIELD_INTEGER"
+				"bonus_attack_speed_night"			"50 70 90 110"
+			}
+			"03"
+			{
+				"var_type"							"FIELD_INTEGER"
+				"stacking_move_speed"				"2"
+			}
+			"04"
+			{
+				"var_type"							"FIELD_INTEGER"
+				"stacking_attack_speed"				"15"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_hunter_in_the_night"
+			{
+				"Passive"					"1"
+				"IsHidden"					"1"
+
+				"AllowIllusionDuplicate"	"1"
+
+				"ThinkInterval"				"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_night_stalker.lua"
+						"Function"			"HunterInTheNight"
+
+						"modifier"			"modifier_imba_hunter_in_the_night_buff"
+						"modifier_stack"	"modifier_imba_hunter_in_the_night_stacks"
+					}
+				}
+			}
+
+			"modifier_imba_hunter_in_the_night_buff"
+			{
+				"IsHidden"					"1"
+				"IsPurgable"				"0"
+
+				"EffectName"				"particles/units/heroes/hero_night_stalker/nightstalker_night_buff.vpcf"
+				"EffectAttachType"			"follow_origin"
+
+				"OnCreated"
+				{
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_night_stalker/nightstalker_change.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"Target"			"CASTER"
+					}
+
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_night_stalker.lua"
+						"Function"			"HunterInTheNightModelChange"
+
+						"night_model"		"models/heroes/nightstalker/nightstalker_night.vmdl"
+					}
+				}
+
+				"OnDestroy"
+				{
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_night_stalker/nightstalker_change.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"Target"			"CASTER"
+					}
+
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_night_stalker.lua"
+						"Function"			"HunterInTheNightModelRevert"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%bonus_movement_speed_pct_night"
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%bonus_attack_speed_night"
+				}
+			}
+
+			"modifier_imba_hunter_in_the_night_stacks"
+			{
+				"IsHidden"					"1"
+				"IsPurgable"				"0"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%stacking_move_speed"
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%stacking_attack_speed"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Night Stalker's Darkness
+	//=================================================================================================================
+	"imba_night_stalker_darkness"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityTextureName"			"night_stalker_darkness"
+
+		// Unit Targeting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_ALL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastPoint"				"0.2"
+		"AbilityCooldown"				"160 120 80"
+		"AbilityManaCost"				"0"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_nightstalker.vsndevts"
+			"particle"					"particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
+		}
+			
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"50.0"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"vision_radius"				"675"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"vision_radius_scepter"		"600"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"enemy_vision_duration"		"5 6 7"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bonus_vision"				"200 400 600"
+			}
+			"06"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"25000"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"				"Hero_Nightstalker.Darkness"
+				"Target"					"CASTER"
+			}
+
+			"FireEffect"
+			{
+				"EffectName"				"particles/units/heroes/hero_night_stalker/nightstalker_ulti.vpcf"
+				"EffectAttachType"			"follow_origin"
+				"Target"					"CASTER"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"				"abilities/hero_night_stalker.lua"
+				"Function"					"Darkness"
+
+				"modifier"					"modifier_imba_darkness"
+				"modifier_enemy_vision"		"modifier_imba_darkness_enemy_vision"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_darkness"
+			{
+				"IsDebuff"					"1"
+				"IsPurgable"				"0"
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_night_stalker.lua"
+						"Function"			"ReduceVision"
+					}
+				}
+
+				"OnDestroy"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_night_stalker.lua"
+						"Function"			"RevertVision"
+					}
+				}
+			}
+
+			"modifier_imba_darkness_enemy_vision"
+			{
+				"IsDebuff"					"1"
+				"IsPurgable"				"0"
+				"IsHidden"					"0"
+
+				"Duration"					"%enemy_vision_duration"
+
+				"States"
+				{
+					"MODIFIER_STATE_PROVIDES_VISION"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Nyx Assassin's Impale
+	//=================================================================================================================
+	"imba_nyx_assassin_impale"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"nyx_assassin_impale"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"900"
+		"AbilityCastPoint"				"0.3"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"13.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"95 115 135 155"
+		
+		// Damage.
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"80 140 200 260"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"width"					"180"
+			}
+			"02"
+			{	
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"1.87 2.17 2.47 2.77"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"length"				"900"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"speed"					"2000"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"air_time"				"0.57"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage_repeat"			"20 30 40 50"
+			}
+			"07"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"damage_duration"		"3.0"
+			}
+			"08"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage"				"80 140 200 260"
+			}
+			"09"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"global_radius"			"25000"
+			}
+		}
+		
+		// Data driven
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_nyx_assassin.vsndevts"
+			"particle"					"particles/units/heroes/hero_nyx_assassin/nyx_assassin_impale.vpcf"
+		}
+		
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"Target"				"CASTER"
+				"EffectName"			"Hero_NyxAssassin.Impale"
+			}
+		
+			"LinearProjectile"
+			{
+				"Target"				"POINT"
+				"EffectName"			"particles/units/heroes/hero_nyx_assassin/nyx_assassin_impale.vpcf"
+				"StartRadius"			"%width"
+				"EndRadius"				"%width"
+				"MoveSpeed"				"%speed"
+				"TargetTeams"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"TargetTypes"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+				"FixedDistance"			"%length"
+				"ProvidesVision"		"0"
+				"HasFrontalCone"		"0"
+			}
+		}
+		
+		"OnProjectileHitUnit"
+		{
+			"DeleteOnHit"				"0"
+		
+			"FireSound"
+			{
+				"Target"				"TARGET"
+				"EffectName"			"Hero_NyxAssassin.Impale.Target" 
+			}
+		
+			"RemoveModifier"
+			{
+				"Target"				"TARGET"
+				"ModifierName"			"modifier_knockback"
+			}
+			
+			"Knockback"
+			{
+				"Target"				"TARGET"
+				"Center"				"CASTER"
+				"Distance"				"0"
+				"Duration"				"%air_time"
+				"Height"				"200"
+				"IsFixedDistance"		"1"
+			}
+			
+			"Stun"
+			{
+				"Target"				"TARGET"
+				"Duration"				"%duration"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"			"abilities/hero_nyx_assassin.lua"
+				"Function"				"Impale"
+
+				"land_sound"			"Hero_NyxAssassin.Impale.TargetLand"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_impale_aura"
+			{
+				"Passive"				"1"
+				"IsHidden"				"1"
+				"IsBuff"				"1"
+				"IsPurgable"			"0"
+		
+				"Aura"          		"modifier_imba_impale_damage_counter"
+				"Aura_Radius"   		"%global_radius"
+				"Aura_Teams"    		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"Aura_Types"    		"DOTA_UNIT_TARGET_HERO"
+				"Aura_Flags"    		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+				"Aura_ApplyToCaster" 	"0"
+			}
+
+			"modifier_imba_impale_damage_counter"
+			{
+				"Passive"				"0"
+				"IsHidden"				"1"
+				"IsDebuff"				"1"
+				"IsPurgable"			"0"
+
+				"OnTakeDamage"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/hero_nyx_assassin.lua"
+						"Function"		"ImpaleDamageCounter"
+
+						"damage"		"%attack_damage"
+					}
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Nyx Assassin's Spiked Carapace
+	//=================================================================================================================
+	"imba_nyx_assassin_spiked_carapace"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_PURE"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"nyx_assassin_spiked_carapace"
+
+		// Stats		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"21 18 15 12"
+		"AbilityCastPoint"				"0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"0"
+		
+		// Special	
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"reflect_duration"			"2.25"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stun_duration"				"1.0 1.5 2.0 2.5"
+			}
+		}
+		
+		// Data driven
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"particle"						"particles/generic_gameplay/generic_stunned.vpcf"
+			"particle"						"particles/units/heroes/hero_nyx_assassin/nyx_assassin_spiked_carapace.vpcf"
+			"particle"						"particles/units/heroes/hero_nyx_assassin/nyx_assassin_spiked_carapace_hit.vpcf"
+			"soundfile"						"soundevents/game_sounds_heroes/game_sounds_nyx_assassin.vsndevts"
+		}
+		
+		"OnSpellStart"
+		{
+			"ApplyModifier"
+			{
+				"Target"					"CASTER"
+				"ModifierName"				"modifier_imba_spiked_carapace"
+			}
+
+			"FireSound"
+			{
+				"EffectName"				"Hero_NyxAssassin.SpikedCarapace"
+				"Target" 					"CASTER"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_imba_spiked_carapace"
+			{
+				"IsBuff"					"1"
+				"IsPurgable"				"0"
+				"IsHidden"					"1"
+			
+				"Duration"					"%reflect_duration"
+				
+				"EffectName"				"particles/units/heroes/hero_nyx_assassin/nyx_assassin_spiked_carapace.vpcf"
+				
+				"OnTakeDamage"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_nyx_assassin.lua"
+						"Function"			"SpikedCarapaceReflect"
+
+						"damage_taken"		"%attack_damage"
+						"stun_modifier"		"modifier_imba_spiked_carapaced_stun"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MIN_HEALTH"		"1" 
+				}
+			}
+			
+			"modifier_imba_spiked_carapaced_stun"
+			{
+				"IsDebuff"				"1"
+				"IsPurgable"			"0"
+			
+				"Duration"				"%stun_duration"
+				
+				"OverrideAnimation"		"ACT_DOTA_DISABLED"
+				
+				"OnCreated"
+				{
+					"AttachEffect"
+					{
+						"Target"			"TARGET"
+						"EffectName"		"particles/units/heroes/hero_nyx_assassin/nyx_assassin_spiked_carapace_hit.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"ControlPoints"
+						{
+							"02"			"%stun_duration %stun_duration %stun_duration"
+						}
+					}
+				
+					"AttachEffect"
+					{
+						"Target"			"TARGET"
+						"EffectName"		"particles/generic_gameplay/generic_stunned.vpcf"
+						"EffectAttachType"	"follow_overhead"
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_NyxAssassin.SpikedCarapace.Stun"
+						"Target" 			"TARGET"
+					}
+				}
+				
+				"States"
+				{
+					"MODIFIER_STATE_STUNNED"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Nyx Assassin's Vendetta
+	//=================================================================================================================
+	"imba_nyx_assassin_vendetta"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_PHYSICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"FightRecapLevel"				"2"
+		"AbilityTextureName"			"nyx_assassin_vendetta"
+
+		// Stats		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"70.0 60.0 50.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"160 210 260"
+		
+		// Special	
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"30.0 40.0 50.0"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"movement_speed"		"20"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_damage"			"250 400 550"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"damage_storage"		"300 500 700"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"cooldown_scepter"		"55.0 40.0 25.0"
+			}
+		}
+		
+		// Data driven
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"						"soundevents/game_sounds_heroes/game_sounds_nyx_assassin.vsndevts"
+			"particle"						"particles/status_fx/status_effect_base.vpcf"
+			"particle"						"particles/units/heroes/hero_nyx_assassin/nyx_assassin_vendetta_start.vpcf"
+		}
+		
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"Target"					"CASTER"
+				"EffectName"				"Hero_NyxAssassin.Vendetta"
+			}
+		
+			"ApplyModifier"
+			{
+				"Target"					"CASTER"
+				"ModifierName"				"modifier_imba_vendetta"
+			}
+			
+			"ApplyModifier"
+			{
+				"Target"					"CASTER"
+				"ModifierName"				"modifier_invisible"
+				"Duration"					"%duration"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_imba_vendetta"
+			{
+				"Duration"					"%duration"
+			
+				"OnCreated"
+				{
+					"AttachEffect"
+					{
+						"Target"			"TARGET"
+						"EffectName"		"particles/units/heroes/hero_nyx_assassin/nyx_assassin_vendetta_start.vpcf"
+						"EffectAttachType"	"start_at_origin"
+					}
+				}
+			
+				"OnAttack"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_nyx_assassin.lua"
+						"Function"			"Vendetta"
+
+						"modifier"			"modifier_imba_vendetta"
+						"stack_modifier"	"modifier_imba_vendetta_damage_stacks"
+						"particle_name"		"particles/units/heroes/hero_nyx_assassin/nyx_assassin_vendetta.vpcf"
+						"attack_sound"		"Hero_NyxAssassin.Vendetta.Crit"
+					}
+				}
+
+				"OnAbilityExecuted"
+				{
+					"RemoveModifier"
+					{
+						"ModifierName"		"modifier_imba_vendetta"
+						"Target" 			"CASTER"
+					}
+				}
+			
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%movement_speed"
+				}
+			
+				"States"
+				{
+					"MODIFIER_STATE_NO_UNIT_COLLISION"				"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_CANNOT_MISS"					"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+
+			"modifier_imba_vendetta_damage_counter"
+			{
+				"Passive"					"1"
+				"IsBuff"					"1"
+				"IsHidden"					"1"
+				"IsPurgable"				"0"
+
+				"OnTakeDamage"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_nyx_assassin.lua"
+						"Function"			"VendettaDamageCount"
+
+						"damage_taken"		"%attack_damage"
+						"stack_modifier"	"modifier_imba_vendetta_damage_stacks"
+					}
+				}
+			}
+
+			"modifier_imba_vendetta_damage_stacks"
+			{
+				"Passive"					"0"
+				"IsBuff"					"1"
+				"IsHidden"					"0"
+				"IsPurgable"				"0"
+
+				"Attributes"				"MODIFIER_ATTRIBUTE_PERMANENT"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Outhouse Decorator's Arcane Orb
+	//=================================================================================================================
+	"imba_obsidian_destroyer_arcane_orb"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"							"ability_datadriven"
+		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_ATTACK"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"				"DAMAGE_TYPE_PURE"
+		"SpellImmunityType"					"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityTextureName"				"obsidian_destroyer_arcane_orb"
+		"AbilityCastRange"					"525"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"						"soundevents/game_sounds_heroes/game_sounds_obsidian_destroyer.vsndevts"
+			"particle"						"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_arcane_orb.vpcf"
+			"particle"  					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"
+		}	
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"					"100"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"mana_pool_damage_pct"		"7 8 9 10"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"illusion_damage"			"1000"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"int_steal_pct"				"10"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"int_steal_duration"		"10.0"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"int_gain"					"2 3 4 5"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_arcane_orb"
+			{
+				"Passive"					"1"
+				"IsHidden"					"1"
+
+				"Orb"
+				{
+					"Priority"				"DOTA_ORB_PRIORITY_ABILITY"
+					"ProjectileName"		"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_arcane_orb.vpcf"
+					"CastAttack"			"1"
+				}
+
+				"OnOrbFire"
+				{
+					"SpendMana"
+					{
+						"Mana"				"%AbilityManaCost"
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_ObsidianDestroyer.ArcaneOrb"
+						"Target"			"TARGET"	
+					}
+
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_outhouse_decorator.lua"
+						"Function"			"ArcaneOrbRestoreMana"
+						"Target"			"CASTER"
+
+						"ability_name"		"imba_obsidian_destroyer_essence_aura"
+						"particle_name"		"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"
+						"sound_name"		"Hero_ObsidianDestroyer.EssenceAura"
+					}
+
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"Target"			"CASTER"
+					}
+				}
+
+				"OnOrbImpact"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_outhouse_decorator.lua"
+						"Function"			"ArcaneOrb"
+						"Target"			"TARGET"
+
+						"int_gain_modifier"	"modifier_imba_obsidian_destroyer_int_gain"
+						"int_loss_modifier"	"modifier_imba_obsidian_destroyer_int_steal"
+					}
+				}
+			}
+
+			"modifier_imba_obsidian_destroyer_int_gain"
+			{
+				"Duration"					"%int_steal_duration"
+				"IsPurgable"				"0"
+				"IsHidden"					"0"
+
+				"TextureName"				"obsidian_destroyer_int_gain"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_INTELLECT_BONUS"	"1"
+				}
+			}
+
+			"modifier_imba_obsidian_destroyer_int_steal"
+			{
+				"Duration"					"%int_steal_duration"
+				"IsPurgable"				"0"
+				"IsDebuff"					"1"
+				"IsHidden"					"0"
+
+				"TextureName"				"obsidian_destroyer_int_steal"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_INTELLECT_BONUS"	"-1"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Outhouse Decorator's Astral Imprisoment
+	//=================================================================================================================
+	"imba_obsidian_destroyer_astral_imprisonment"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY | DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_NOT_CREEP_HERO | DOTA_UNIT_TARGET_FLAG_NOT_MAGIC_IMMUNE_ALLIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityTextureName"			"obsidian_destroyer_astral_imprisonment"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_obsidian_destroyer.vsndevts"		
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_prison.vpcf"
+		}
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDuration"				"4.0"
+		"AbilityCooldown"				"18.0 16.0 14.0 12.0"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"525"
+		"AbilityCastPoint"				"0.2"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"120 140 160 180"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"0.5" // applies multiple modifiers
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"int_steal_pct"			"20"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"steal_duration"		"20.0"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"prison_duration"		"4.0"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"int_gain"				"4 7 10 13"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"int_gain_duration"		"50.0"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName" 			"Hero_ObsidianDestroyer.AstralImprisonment.Cast"
+				"Target"				"CASTER"
+			}
+
+			"FireSound"
+			{
+				"EffectName"			"Hero_ObsidianDestroyer.AstralImprisonment"
+				"Target"				"TARGET"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"			"abilities/hero_outhouse_decorator.lua"
+				"Function"				"AstralImprisonment"
+
+				"ability_name"			"imba_obsidian_destroyer_arcane_orb"
+				"int_gain_modifier"		"modifier_imba_obsidian_destroyer_int_gain"
+				"int_loss_modifier"		"modifier_imba_obsidian_destroyer_int_steal"				
+			}	
+
+			"ApplyModifier"
+			{
+				"ModifierName"			"modifier_imba_astral_imprisonment"
+				"Target"				"TARGET"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_astral_imprisonment"
+			{
+				"Duration"				"%prison_duration"
+				"IsDebuff"				"1"
+				"IsHidden"				"0"
+				"IsPurgable"			"0"
+
+				"EffectName"			"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_prison.vpcf"
+				"EffectAttachType"		"attach_origin"
+
+
+				"States"
+				{
+					"MODIFIER_STATE_STUNNED"		"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_OUT_OF_GAME"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_INVULNERABLE"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_HEALTH_BAR"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+
+				"OnDestroy"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/hero_outhouse_decorator.lua"
+						"Function"		"AstralImprisonmentEnd"
+
+						"sound_name"	"Hero_ObsidianDestroyer.AstralImprisonment"				
+					}
+
+					"FireSound"
+					{
+						"EffectName"	"Hero_ObsidianDestroyer.AstralImprisonment.End"
+						"Target"		"TARGET"
+					}
+				}				
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Outhouse Decorator's Essence Aura
+	//=================================================================================================================
+	"imba_obsidian_destroyer_essence_aura"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AURA"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO"
+		"AbilityTextureName"			"obsidian_destroyer_essence_aura"
+
+			// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_obsidian_destroyer.vsndevts"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"		
+		}
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"1200"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"bonus_mana"	    	"2 3 4 5"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"restore_amount"		"6 8 10 12"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_essence_aura"
+			{
+				"Passive"					"1"
+				"IsPurgable"				"0"
+				"IsHidden"					"1"
+
+				"Aura"						"modifier_imba_essence_aura_buff"
+				"Aura_Radius"				"%radius"
+				"Aura_Teams"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+				"Aura_Types"				"DOTA_UNIT_TARGET_HERO"
+				"Aura_ApplyToCaster" 		"1"
+
+				"ThinkInterval"  			"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_outhouse_decorator"
+						"Function"			"EssenceAuraMana"
+					}
+				}
+			}
+
+			"modifier_imba_essence_aura_buff"
+			{
+				"IsHidden"					"0"
+				
+				"OnAbilityExecuted"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_outhouse_decorator.lua"
+						"Function"			"RestoreMana"
+
+						"Target"			"UNIT"
+					}
+
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"Target"			"UNIT"
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_ObsidianDestroyer.EssenceAura"
+						"Target"			"UNIT"
+					}
+				}
+			}
+
+			"modifier_essence_aura_mana"
+			{
+				"Passive"			"1"
+				"IsHidden"			"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"	"%bonus_mana"
+				}
+			}
+
+			"modifier_essence_aura_mana_dummy"
+			{
+				"Passive"			"0"
+				"IsHidden"			"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"	"1"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Outhouse Decorator's Sanity Eclipse
+	//=================================================================================================================
+	"imba_obsidian_destroyer_sanity_eclipse"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityCastRange"				"700"
+		"AbilityCastPoint"				"0.2"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"FightRecapLevel"				"2"
+		"AbilityTextureName"			"obsidian_destroyer_sanity_eclipse"
+		"AOERadius"						"%radius"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_obsidian_destroyer.vsndevts"		
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_area.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_area_aoe.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_area_embers.vpcf"	
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_area_glow.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_damage.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_mana_loss.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_smoke_main.vpcf"
+			"particle"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_prison.vpcf"
+			
+		}
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"						"160.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"						"175 250 325"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"damage_multiplier"				"8 10 12"
+			}
+			"02"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"radius"						"400 500 600"
+			}
+			"03"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"cast_range"					"700"
+			}
+			"04"
+			{
+				"var_type"						"FIELD_INTEGER"
+				"mana_burn_pct"					"75"
+			}	
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"					"Hero_ObsidianDestroyer.SanityEclipse.Cast"
+				"Target"						"CASTER"
+			}
+
+			"FireSound"
+			{
+				"EffectName"					"Hero_ObsidianDestroyer.SanityEclipse"
+				"Target"						"POINT"
+			}
+
+			"FireEffect"
+			{ 
+				"EffectName"					"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_sanity_eclipse_area.vpcf"
+				"EffectAttachType"				"start_at_customorigin"
+				"TargetPoint"					"POINT"
+
+				"ControlPoints"
+				{
+					"00" "POINT"
+					"01" "%radius 0 0"
+					"02" "%radius 0 0"
+					"03" "%radius 0 0"				
+				}
+			}		
+
+			"RunScript"
+			{
+				"ScriptFile"					"abilities/hero_outhouse_decorator.lua"
+				"Function"						"SanityEclipse"
+				"Target"						"POINT"
+
+				"astral_name"					"imba_obsidian_destroyer_astral_imprisonment"
+				"astral_modifier"				"modifier_imba_astral_imprisonment"
+				"astral_sound"					"Hero_ObsidianDestroyer.AstralImprisonment"
+				"ability_name"					"imba_obsidian_destroyer_arcane_orb"
+				"int_gain_modifier"				"modifier_imba_obsidian_destroyer_int_gain"
+				"int_loss_modifier"				"modifier_imba_obsidian_destroyer_int_steal"
+			}			
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Omniknight's Purification
+	//=================================================================================================================
+	"imba_omniknight_purification"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_PURE"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ALLIES_YES"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"omniknight_purification"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"700"
+		"AbilityCastPoint"				"0.4"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10.0"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"100 110 120 130"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_purification.vpcf"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_purification_hit.vpcf"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_purification_cast.vpcf"
+		}
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"heal"					"100 200 300 400"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"375"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"passive_cooldown"		"10.0"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"				"abilities/hero_omniknight.lua"
+				"Function"					"Purification"
+
+				"cast_sound"				"Hero_Omniknight.Purification"
+				"aoe_particle"				"particles/units/heroes/hero_omniknight/omniknight_purification.vpcf"
+				"target_particle"			"particles/units/heroes/hero_omniknight/omniknight_purification_cast.vpcf"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_purification_passive"
+			{
+				"Passive"					"1"
+				"IsHidden"					"0"
+				"IsBuff"					"1"
+				"IsPurgable"				"0"
+		
+				"Attributes"				"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"util.lua"
+						"Function"			"IllusionPassiveRemover"
+
+						"modifier"			"modifier_imba_purification_passive"
+					}
+				}
+		
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MIN_HEALTH"		"1" 
+				}
+
+				"OnTakeDamage"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_omniknight.lua"
+						"Function"			"PurificationDeath"
+
+						"damage"			"%attack_damage"
+						"cast_sound"		"Hero_Omniknight.Purification"
+						"aoe_particle"		"particles/units/heroes/hero_omniknight/omniknight_purification.vpcf"
+						"target_particle"	"particles/units/heroes/hero_omniknight/omniknight_purification_cast.vpcf"
+						"passive_modifier"	"modifier_imba_purification_passive"
+						"cooldown_modifier"	"modifier_imba_purification_passive_cooldown"
+					}
+				}
+			}
+
+			"modifier_imba_purification_passive_cooldown"
+			{
+				"Passive"					"0"
+				"IsHidden"					"0"
+				"IsDebuff"					"1"
+				"IsPurgable"				"0"
+
+				"TextureName"				"omnikinight_purification_cooldown"
+		
+				"Attributes"				"MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE"
+
+				"Duration"					"%passive_cooldown"
+		
+				"OnDestroy"
+				{
+					"ApplyModifier"
+					{
+						"ModifierName"		"modifier_imba_purification_passive"
+						"Target" 			"CASTER"
+					}
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Omniknight's Repel
+	//=================================================================================================================
+	"imba_omniknight_repel"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_BOTH"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ALLIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"omniknight_repel"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"700"
+		"AbilityCastPoint"				"0.4"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"14.0"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"50"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"3.0"	// Value much higher than cost.
+
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"6.0 8.0 10.0 12.0"
+			}
+		}
+
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_repel_buff.vpcf"
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Hero_Omniknight.Repel"
+				"Target"				"TARGET"
+			}
+
+			"FireEffect"
+			{
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_cast.vpcf"
+				"EffectAttachType"		"follow_origin"
+				"Target"            	"TARGET"
+			}
+
+			"ApplyModifier"
+			{
+				"Target" 				"TARGET"
+				"ModifierName"			"modifier_imba_repel"
+			}
+
+			"FireEffect"
+			{
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_cast.vpcf"
+				"EffectAttachType"		"follow_origin"
+				"Target"            	"CASTER"
+			}
+
+			"ApplyModifier"
+			{
+				"Target" 				"CASTER"
+				"ModifierName"			"modifier_imba_repel"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_repel"
+			{
+				"IsBuff"				"1"
+				"IsPurgable"			"1"
+
+				"Duration"				"%duration"
+
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_buff.vpcf"
+				"EffectAttachType"		"follow_origin"
+
+				"States"
+				{
+					"MODIFIER_STATE_MAGIC_IMMUNE"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Omniknight's Repel (scepter version)
+	//=================================================================================================================
+	"imba_omniknight_repel_scepter"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_BOTH"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ALLIES_NO"
+		"FightRecapLevel"				"1"
+		"AbilityTextureName"			"omniknight_repel"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"700"
+		"AbilityCastPoint"				"0.4"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"14.0"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"50"
+
+		// Stats
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityModifierSupportValue"	"3.0"	// Value much higher than cost.
+
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"duration"				"6.0 8.0 10.0 12.0"
+			}
+		}
+
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_repel_buff.vpcf"
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Hero_Omniknight.Repel"
+				"Target"				"TARGET"
+			}
+
+			"FireEffect"
+			{
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_cast.vpcf"
+				"EffectAttachType"		"follow_origin"
+				"Target"            	"TARGET"
+			}
+
+			"ApplyModifier"
+			{
+				"Target" 				"TARGET"
+				"ModifierName"			"modifier_imba_repel"
+			}
+
+			"FireEffect"
+			{
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_cast.vpcf"
+				"EffectAttachType"		"follow_origin"
+				"Target"            	"CASTER"
+			}
+
+			"ApplyModifier"
+			{
+				"Target" 				"CASTER"
+				"ModifierName"			"modifier_imba_repel"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_repel"
+			{
+				"IsBuff"				"1"
+				"IsPurgable"			"1"
+
+				"Duration"				"%duration"
+
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_repel_buff.vpcf"
+				"EffectAttachType"		"follow_origin"
+
+				"States"
+				{
+					"MODIFIER_STATE_MAGIC_IMMUNE"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Omniknight's Degen Aura
+	//=================================================================================================================
+	"imba_omniknight_degen_aura"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AURA"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"AbilityTextureName"			"omniknight_degen_aura"
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"350 400 450 500"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"speed_bonus"			"-20 -25 -30 -35"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"attack_bonus_tooltip"	"-20 -25 -30 -35"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"350 400 450 500"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"stack_rate"			"1.0"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"sticky_time"			"2.0"
+			}
+			"06"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"stack_reduction_pct"	"5 6 7 8"
+			}
+
+		}
+
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"					"particles/units/heroes/hero_omniknight/omniknight_degen_aura_debuff.vpcf"
+		}
+
+		"OnUpgrade"
+		{
+			"RemoveModifier"
+			{
+				"ModifierName"			"modifier_imba_degen_aura"
+				"Target" 				"CASTER"
+			}
+
+			"ApplyModifier"
+			{
+				"ModifierName"			"modifier_imba_degen_aura"
+				"Target" 				"CASTER"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_degen_aura"
+			{
+				"Passive" 				"1"
+				"IsHidden" 				"1"
+				"IsBuff"				"1"
+				"IsPurgable"			"0"
+
+				"Aura" 					"modifier_imba_degen_aura_effect"
+				"Aura_Radius" 			"%radius"
+				"Aura_Teams" 			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"Aura_Types" 			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+				"Aura_Flags"   			"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+			}
+
+			"modifier_imba_degen_aura_effect"
+			{
+				"IsDebuff"				"1"
+				"IsPurgable"			"1"
+				"IsHidden"				"1"
+
+				"EffectName"			"particles/units/heroes/hero_omniknight/omniknight_degen_aura_debuff.vpcf"
+				"EffectAttachType"		"follow_origin"
+
+				"Duration"				"%sticky_time"
+
+				"ThinkInterval"  		"%stack_rate"
+				
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_omniknight.lua"
+						"Function"			"DegenAura"
+
+						"modifier"			"modifier_imba_degen_aura_"
+						"dummy_modifier"	"modifier_imba_degen_aura_refresh_dummy"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%speed_bonus"
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%attack_bonus_tooltip"
+				}
+			}
+
+			"modifier_imba_degen_aura_str"
+			{
+				"IsDebuff"				"1"
+				"IsHidden"				"0"
+				"IsPurgable"			"1"
+
+				"Duration"				"%sticky_time"
+
+				"AllowIllusionDuplicate"    						"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_STRENGTH_BONUS" 		"-1"
+				}
+			}
+
+			"modifier_imba_degen_aura_agi"
+			{
+				"IsDebuff"				"1"
+				"IsHidden"				"0"
+				"IsPurgable"			"1"
+
+				"Duration"				"%sticky_time"
+
+				"AllowIllusionDuplicate"    						"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_AGILITY_BONUS" 		"-1"
+				}
+			}
+
+			"modifier_imba_degen_aura_int"
+			{
+				"IsDebuff"				"1"
+				"IsHidden"				"0"
+				"IsPurgable"			"1"
+
+				"Duration"				"%sticky_time"
+
+				"AllowIllusionDuplicate"    						"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_STATS_INTELLECT_BONUS" 		"-1"
+				}
+			}
+
+			"modifier_imba_degen_aura_refresh_dummy"
+			{
+				"IsDebuff"				"1"
+				"IsHidden"				"1"
+				"IsPurgable"			"1"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS" 					"1"
+					"MODIFIER_PROPERTY_HEALTH_BONUS" 				"1"
+				}
+			}
+
+		}
+	}
+
+
+	//=================================================================================================================
+	// Ability: Omniknight's Guardian Angel
+	//=================================================================================================================
+	"imba_omniknight_guardian_angel"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"							"ability_datadriven"
+		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+		"AbilityType"						"DOTA_ABILITY_TYPE_ULTIMATE"
+		"SpellImmunityType"					"SPELL_IMMUNITY_ALLIES_YES"
+		"FightRecapLevel"					"2"
+		"AbilityTextureName"				"omniknight_guardian_angel"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"					"150.0"
+		"AbilityCastPoint"					"0.4"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"					"125 175 225"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"6.0 8.0 10.0"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"hp_regen"					"60"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"25000"
+			}
+		}
+
+		"precache"
+		{
+			"soundfile"						"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"						"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_halo_buff.vpcf"
+			"particle"						"particles/status_fx/status_effect_guardian_angel.vpcf"
+			"particle"						"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_ally.vpcf"
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"				"Hero_Omniknight.GuardianAngel.Cast"
+				"Target"					"CASTER"
+			}
+
+			"ActOnTargets"
+			{
+				"Target"
+				{
+					"Center"  				"CASTER"
+					"Radius"				"%radius"
+					"Teams" 				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+					"Types" 				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+				}
+
+				"Action"
+				{
+					"ApplyModifier"
+					{
+						"Target" 			"TARGET"
+						"ModifierName"		"modifier_imba_guardian_angel"
+					}
+				}
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_guardian_angel"
+			{
+				"IsBuff"					"1"
+				"IsPurgable"				"1"
+
+				"Duration"					"%duration"
+
+				"StatusEffectName"    		"particles/status_fx/status_effect_guardian_angel.vpcf"
+				"StatusEffectPriority" 		"10"
+
+				"OnCreated"
+				{
+					"AttachEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_halo_buff.vpcf"
+						"EffectAttachType"	"follow_overhead"
+						"Target"			"CASTER"
+					}
+
+				 	"AttachEffect"
+					{
+						"Target"
+						{
+							"Center"  		"CASTER"
+							"Radius"		"%radius"
+							"Teams" 		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+							"Types" 		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL"
+						}
+
+						"EffectName"		"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_ally.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"EffectRadius"		"%radius"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PHYSICAL"		"1"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"			"%hp_regen"
+				}
+			}
+
+			"modifier_imba_guardian_angel_scepter_check"
+			{
+				"Passive"								"1"
+				"IsHidden"								"1"
+				"IsPurgable"							"0"
+
+				"ThinkInterval"  						"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_omniknight.lua"
+						"Function"						"ScepterCheck"
+
+						"modifier"						"modifier_imba_guardian_angel_scepter_check"
+						"repel_name"					"imba_omniknight_repel"
+						"guardian_angel_name"			"imba_omniknight_guardian_angel"
+					}
+				}
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"util.lua"
+						"Function"						"IllusionPassiveRemover"
+
+						"modifier"						"modifier_imba_guardian_angel_scepter_check"
+					}
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Omniknight's Guardian Angel (scepter version)
+	//=================================================================================================================
+	"imba_omniknight_guardian_angel_scepter"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"							"ability_datadriven"
+		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+		"AbilityType"						"DOTA_ABILITY_TYPE_ULTIMATE"
+		"SpellImmunityType"					"SPELL_IMMUNITY_ALLIES_YES"
+		"FightRecapLevel"					"2"
+		"AbilityTextureName"				"omniknight_guardian_angel"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"					"150.0"
+		"AbilityCastPoint"					"0.4"
+		
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"					"125 175 225"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"duration"					"6.0 8.0 10.0"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"hp_regen"					"60"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"25000"
+			}
+		}
+
+		"precache"
+		{
+			"soundfile"						"soundevents/game_sounds_heroes/game_sounds_omniknight.vsndevts"
+			"particle"						"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_halo_buff.vpcf"
+			"particle"						"particles/status_fx/status_effect_guardian_angel.vpcf"
+			"particle"						"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_ally.vpcf"
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"				"Hero_Omniknight.GuardianAngel.Cast"
+				"Target"					"CASTER"
+			}
+
+			"ActOnTargets"
+			{
+				"Target"
+				{
+					"Center"  				"CASTER"
+					"Radius"				"%radius"
+					"Teams" 				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+					"Types" 				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+				}
+
+				"Action"
+				{
+					"ApplyModifier"
+					{
+						"Target" 			"TARGET"
+						"ModifierName"		"modifier_imba_guardian_angel"
+					}
+				}
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_guardian_angel"
+			{
+				"IsBuff"					"1"
+				"IsPurgable"				"1"
+
+				"Duration"					"%duration"
+
+				"StatusEffectName"    		"particles/status_fx/status_effect_guardian_angel.vpcf"
+				"StatusEffectPriority" 		"10"
+
+				"OnCreated"
+				{
+					"AttachEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_halo_buff.vpcf"
+						"EffectAttachType"	"follow_overhead"
+						"Target"			"CASTER"
+					}
+
+				 	"AttachEffect"
+					{
+						"Target"
+						{
+							"Center"  		"CASTER"
+							"Radius"		"%radius"
+							"Teams" 		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+							"Types" 		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+						}
+
+						"EffectName"		"particles/units/heroes/hero_omniknight/omniknight_guardian_angel_ally.vpcf"
+						"EffectAttachType"	"follow_origin"
+						"EffectRadius"		"%radius"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_ABSOLUTE_NO_DAMAGE_PHYSICAL"		"1"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"			"%hp_regen"
+				}
+			}
+
+			"modifier_imba_guardian_angel_scepter_check"
+			{
+				"Passive"								"1"
+				"IsHidden"								"1"
+				"IsPurgable"							"0"
+
+				"ThinkInterval"  						"0.1"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"abilities/hero_omniknight.lua"
+						"Function"						"ScepterLostCheck"
+
+						"modifier"						"modifier_imba_guardian_angel_scepter_check"
+						"repel_name"					"imba_omniknight_repel"
+						"guardian_angel_name"			"imba_omniknight_guardian_angel"
+					}
+				}
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"					"util.lua"
+						"Function"						"IllusionPassiveRemover"
+
+						"modifier"						"modifier_imba_guardian_angel_scepter_check"
+					}
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Phantom Assassin's Stifling Dagger
+	//=================================================================================================================
+	"imba_phantom_assassin_stifling_dagger"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitDamageType"			"DAMAGE_TYPE_PURE"	
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"AbilityTextureName"			"phantom_assassin_stifling_dagger"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_stifling_dagger.vpcf"
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_stifling_dagger_debuff.vpcf"
+			"particle"					"particles/generic_gameplay/generic_silence.vpcf"
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+		}
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1400"
+		"AbilityCastPoint"				"0.2"
+		
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"6"
+		"AbilityDuration"				"4.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"30 25 20 15"
+		
+		//Damage
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDamage"					"80 120 160 200"
+			
+		// Special	
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"move_slow"				"-20 -30 -40 -50"
+			}
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"dagger_speed"			"1400"
+			}
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"slow_duration"			"4"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"silence_duration"		"2"
+			}
+			"05"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"hero_dmg_pct"			"50"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"TrackingProjectile"
+			{
+				"Target"           		"TARGET"
+			    "EffectName"       		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_stifling_dagger.vpcf"
+			    "Dodgeable"        		"1"
+			    "ProvidesVision"   		"1"
+			    "VisionRadius"     		"600"
+			    "MoveSpeed"        		"%dagger_speed"
+			    "SourceAttachment"  	"DOTA_PROJECTILE_ATTACHMENT_ATTACK_1"
+			}
+
+			"FireSound"
+			{
+				"EffectName"			"Hero_PhantomAssassin.Dagger.Cast"
+				"Target"				"CASTER"
+			}
+		}
+
+		"OnProjectileHitUnit"
+		{
+			"Damage"
+			{
+				"Target"
+				{
+					"Center"			"TARGET"
+					"Types"				"DOTA_UNIT_TARGET_HERO"
+				}
+
+				"Type"					"DAMAGE_TYPE_PURE"
+				"Damage"				"%AbilityDamage * %hero_dmg_pct / 100"
+			}
+
+			"Damage"
+			{
+				"Target"
+				{
+					"Center"			"TARGET"
+					"Types"				"DOTA_UNIT_TARGET_BASIC"
+				}
+				"Type"					"DAMAGE_TYPE_PURE"
+				"Damage"				"%AbilityDamage"
+			}
+
+			"FireSound"
+			{
+				"EffectName"			"Hero_PhantomAssassin.Dagger.Target"
+				"Target"				"TARGET"
+			}
+
+			"ApplyModifier"
+			{
+				"ModifierName"			"modifier_imba_stifling_dagger_slow"
+				"Target"				"TARGET"
+			}
+
+			"ApplyModifier"
+			{
+				"ModifierName"			"modifier_imba_stifling_dagger_silence"
+				"Target"				"TARGET"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"			"abilities/hero_phantom_assassin.lua"
+				"Function"				"StiflingDaggerCrit"
+				"Target"				"TARGET"
+
+				"modifier_crit"			"modifier_imba_coup_de_grace_stacks"
+				"crit_ability_name"		"imba_phantom_assassin_coup_de_grace"
+				"modifier_blood_fx"		"modifier_imba_stifling_dagger_blood"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_stifling_dagger_slow"
+			{
+				"IsDebuff"				"1"
+
+				"Duration"				"%slow_duration"
+
+				"EffectName"			"particles/units/heroes/hero_phantom_assassin/phantom_assassin_stifling_dagger_debuff.vpcf"
+				"EffectAttachType"		"follow_origin"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"		"%move_slow"
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT" 		"%move_slow"
+				}
+
+				"States"
+				{
+					"MODIFIER_STATE_PROVIDES_VISION"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+
+			"modifier_imba_stifling_dagger_silence"
+			{
+				"IsDebuff"				"1"
+				"IsHidden"				"1"
+
+				"Duration"				"%silence_duration"
+
+				"EffectName"			"particles/generic_gameplay/generic_silence.vpcf"
+				"EffectAttachType"		"follow_overhead"
+
+				"States"
+				{
+					"MODIFIER_STATE_SILENCED"			"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+
+			"modifier_imba_stifling_dagger_blood"
+			{
+				"IsDebuff"					"1"
+				"IsHidden"					"1"
+
+				"Duration"					"0.01"
+
+				"OnDestroy"
+				{
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+						"EffectAttachType"	"start_at_customorigin"
+						
+						"ControlPointEntities"
+						{
+							"TARGET"		"follow_origin"
+							"TARGET"		"follow_origin"
+						}
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_PhantomAssassin.CoupDeGrace"
+						"Target"
+						{
+							"Center"  		"TARGET"
+							"Flags"     	"DOTA_UNIT_TARGET_FLAG_DEAD"
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Phantom Assassin's Phantom Strike
+	//=================================================================================================================
+	"imba_phantom_assassin_phantom_strike"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY | DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"AbilityTextureName"			"phantom_assassin_phantom_strike"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_phantom_strike_end.vpcf"
+		}
+		
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"1400"
+		"AbilityCastPoint"				"0.2"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"10 8 6 4"
+
+		// Duration
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityDuration"				"3"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"50"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bonus_attack_speed"		"150 180 210 240"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"tooltip_range"				"1400"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"tooltip_duration"			"3.0"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"Blink"
+			{
+				"Target"
+				{
+					"Center"  				"TARGET"
+					"Teams" 				"DOTA_UNIT_TARGET_TEAM_BOTH"
+					"Types" 				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_MECHANICAL | DOTA_UNIT_TARGET_BUILDING"
+					"Flags"					"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+				}
+			}
+
+			"ApplyModifier"
+			{
+				"ModifierName"				"modifier_imba_phantom_strike"
+				"Target"					"CASTER"
+			}
+
+			"FireSound"
+			{
+				"EffectName"				"Hero_PhantomAssassin.Strike.Start"
+				"Target"					"CASTER"
+			}
+
+			"AttachEffect"
+			{
+				"EffectName"				"particles/units/heroes/hero_phantom_assassin/phantom_assassin_phantom_strike_end.vpcf"
+				"EffectAttachType"			"follow_origin"
+				"Target"					"CASTER"
+			}
+
+			"FireSound"
+			{
+				"EffectName"				"Hero_PhantomAssassin.Strike.End"
+				"Target"					"CASTER"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"				"abilities/hero_phantom_assassin.lua"
+				"Function"					"PhantomStrike"
+
+				"Target"					"TARGET"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_phantom_strike"
+			{
+				"IsBuff"					"1"
+				"Duration"					"%AbilityDuration"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%bonus_attack_speed"
+				}
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ability: Phantom Assassin's Blur
+	//=================================================================================================================
+	"imba_phantom_assassin_blur"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"			"phantom_assassin_blur"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_blur.vpcf"
+		}
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bonus_evasion"				"20 30 40 50"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"transparency_fade"			"0.75"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"radius"					"1600"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"stack_evasion"				"10"
+			}
+			"05"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"stack_duration"			"1.5"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_blur"
+			{
+				"Passive"					"1"
+				"IsHidden"					"1"
+
+				"ThinkInterval"				"0.5"
+
+				"OnIntervalThink"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_phantom_assassin.lua"
+						"Function"			"Blur"
+
+						"modifier_enemy"	"modifier_imba_blur_enemy"
+					}
+				}
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_EVASION_CONSTANT"			"%bonus_evasion"
+				}
+
+				"States"
+				{
+					"MODIFIER_STATE_NOT_ON_MINIMAP_FOR_ENEMIES"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+
+			"modifier_imba_blur_stacking"
+			{
+				"Passive"					"1"
+				"IsHidden"					"1"
+
+				"OnTakeDamage"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_phantom_assassin.lua"
+						"Function"			"BlurStacks"
+
+						"damage"			"%attack_damage"
+						"stack_modifier"	"modifier_imba_blur_stacks"
+					}
+				}
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"		"util.lua"
+						"Function"			"IllusionPassiveRemover"
+
+						"modifier"			"modifier_imba_blur_stacking"
+					}
+				}
+			}
+
+
+			"modifier_imba_blur_enemy"
+			{
+				"EffectName"				"particles/units/heroes/hero_phantom_assassin/phantom_assassin_blur.vpcf"
+				"EffectAttachType"			"follow_origin"
+				
+				"States"
+				{
+					"MODIFIER_STATE_NOT_ON_MINIMAP_FOR_ENEMIES"		"MODIFIER_STATE_VALUE_DISABLED"
+				}
+			}
+
+			"modifier_imba_blur_stacks"
+			{
+				"IsBuff"					"1"
+				"IsHidden"					"0"
+				"Passive"					"0"
+				"IsPurgable"				"0"
+
+				"Duration"					"%stack_duration"
+			}
+
+		}
+	}
+	//=================================================================================================================
+	// Ability: Phantom Assassin's Coup de Grace
+	//=================================================================================================================
+	"imba_phantom_assassin_coup_de_grace"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"AbilityTextureName"			"phantom_assassin_coup_de_grace"
+
+		// Precache
+		//-------------------------------------------------------------------------------------------------------------
+		"precache"
+		{
+			"soundfile"					"soundevents/game_sounds_heroes/game_sounds_phantom_assassin.vsndevts"
+			"particle"					"particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+		}
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"crit_bonus"				"300 400 500"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"crit_chance"				"15"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"crit_increase"				"5 10 15"
+			}
+			"04"
+			{
+				"var_type"					"FIELD_FLOAT"
+				"crit_increase_duration"	"5.0"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_imba_coup_de_grace"
+			{
+				"Passive"					"1"
+				"IsHidden"					"1"
+
+				"OnAttackStart"
+				{
+					"RemoveModifier"
+					{
+						"ModifierName"		"modifier_imba_coup_de_grace_crit"
+						"Target"			"CASTER"
+					}
+
+					"RemoveModifier"
+					{
+						"ModifierName"		"modifier_imba_coup_de_grace_kill"
+						"Target"			"CASTER"
+					}
+
+					"RunScript"
+					{
+						"ScriptFile"		"abilities/hero_phantom_assassin.lua"
+						"Function"			"CoupDeGrace"
+
+						"stack_modifier"	"modifier_imba_coup_de_grace_stacks"
+						"crit_modifier"		"modifier_imba_coup_de_grace_crit"
+						"kill_modifier"		"modifier_imba_coup_de_grace_kill"
+					}
+				}
+			}
+
+			"modifier_imba_coup_de_grace_crit"
+			{
+				"IsHidden"					"1"
+				"IsPurgable"				"0"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_PREATTACK_CRITICALSTRIKE" 	"%crit_bonus"
+				}
+
+				"OnAttackLanded"
+				{
+					"RemoveModifier"
+					{
+						"ModifierName"		"modifier_imba_coup_de_grace_crit"
+						"Target"			"CASTER"
+					}
+
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+						"EffectAttachType"	"start_at_customorigin"
+						
+						"ControlPointEntities"
+						{
+							"TARGET"		"follow_origin"
+							"TARGET"		"follow_origin"
+						}
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_PhantomAssassin.CoupDeGrace"
+						"Target"			"TARGET"
+					}
+				}
+			}
+
+			"modifier_imba_coup_de_grace_kill"
+			{
+				"IsHidden"					"1"
+				"IsPurgable"				"0"
+
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_PREATTACK_BONUS_DAMAGE" 		"77777"
+				}
+
+				"OnAttackLanded"
+				{
+					"RemoveModifier"
+					{
+						"ModifierName"		"modifier_imba_coup_de_grace_kill"
+						"Target"			"CASTER"
+					}
+
+					"FireEffect"
+					{
+						"EffectName"		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_crit_impact.vpcf"
+						"EffectAttachType"	"start_at_customorigin"
+						
+						"ControlPointEntities"
+						{
+							"TARGET"		"follow_origin"
+							"TARGET"		"follow_origin"
+						}
+					}
+
+					"FireSound"
+					{
+						"EffectName"		"Hero_PhantomAssassin.CoupDeGrace"
+						"Target"			"TARGET"
+					}
+				}
+			}
+
+			"modifier_imba_coup_de_grace_stacks"
+			{
+				"IsBuff"					"1"
+				"IsHidden"					"0"
+				"Passive"					"0"
+				"IsPurgable"				"0"
+
+				"Duration"					"%crit_increase_duration"
 			}
 		}
 	}

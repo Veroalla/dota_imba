@@ -103,6 +103,7 @@ function Torrent( keys )
 
 			-- Applies the phasing and knockback modifiers
 			ability:ApplyDataDrivenModifier(caster, enemy, modifier_phase, {})
+			enemy:RemoveModifierByName("modifier_knockback")
 			enemy:AddNewModifier(caster, ability, "modifier_knockback", knockback)
 
 			-- Deals tick damage [max_ticks] times
@@ -144,8 +145,8 @@ function TidebringerCooldown( keys )
 	local high_tide = caster:HasModifier(modifier_high_tide)
 	local low_tide = caster:HasModifier(modifier_low_tide)
 
-	-- If the skill has finished its cooldown and no modifiers are present, apply one at random
-	if cooldown == 0 and not tsunami and not high_tide and not low_tide and not wave_break then
+	-- If the skill has finished its cooldown and no modifiers are present, apply one at random when able
+	if cooldown == 0 and not tsunami and not high_tide and not low_tide and not wave_break and not caster:IsOutOfGame() and not caster:IsInvulnerable() then
 		ability:ApplyDataDrivenModifier(caster, caster, modifier_name, {})
 	end
 end
@@ -372,7 +373,7 @@ function OnABoat( keys )
 		ability:ApplyDataDrivenModifier(caster, target, modifier_rum, {})
 		return nil
 	end
-	
+
 	-- Retrieve crash position and calculate knockback parameters
 	local crash_pos = caster.ghostship_crash_pos
 	local target_pos = target:GetAbsOrigin()
@@ -391,6 +392,7 @@ function OnABoat( keys )
 		center_y = knockback_origin.y,
 		center_z = knockback_origin.z
 	}
+	target:RemoveModifierByName("modifier_knockback")
 	target:AddNewModifier(caster, nil, "modifier_knockback", knockback)
 	ApplyDamage({victim = target, attacker = caster, ability = ability, damage = impact_damage, damage_type = ability:GetAbilityDamageType()})
 end

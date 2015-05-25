@@ -471,9 +471,20 @@ end
 
 -- Checks if a hero is wielding Aghanim's Scepter
 function HasScepter(hero)
-	for i=0,15 do
+	for i=0,5 do
 		local item = hero:GetItemInSlot(i)
 		if item and item:GetAbilityName() == "item_imba_ultimate_scepter" then
+			return true
+		end
+	end
+	return false
+end
+
+-- Checks if a hero is wielding an Aegis of the immortal
+function HasAegis(hero)
+	for i=0,5 do
+		local item = hero:GetItemInSlot(i)
+		if item and item:GetAbilityName() == "item_aegis" then
 			return true
 		end
 	end
@@ -530,4 +541,14 @@ function IllusionPassiveRemover( keys )
 	if target:IsIllusion() then
 		target:RemoveModifierByName(modifier)
 	end
+end
+
+function ApplyDataDrivenModifierWhenPossible( caster, target, ability, modifier_name)
+	Timers:CreateTimer(0, function()
+		if target:IsOutOfGame() or target:IsInvulnerable() then
+			return 0.1
+		else
+			ability:ApplyDataDrivenModifier(caster, target, modifier_name, {})
+		end			
+	end)
 end

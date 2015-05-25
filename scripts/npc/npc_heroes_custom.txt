@@ -26,7 +26,7 @@
 		"Ability4"					"imba_antimage_mana_void"
 		"Ability5"					"attribute_bonus_agi"
 
-		"AttackRate"				"1.2"
+		"AttackRate"				"1.25"
 
 		"AttributeBaseAgility"		"28"
 
@@ -299,11 +299,13 @@
 		"AttackDamageMin"			"43"
 		"AttackDamageMax"			"47"
 
-	//	"Ability1"					"imba_night_stalker_void"
-	//	"Ability2"					"imba_night_stalker_crippling_fear"
-	//	"Ability3"					"imba_night_stalker_hunter_in_the_night"
-	//	"Ability4"					"imba_night_stalker_darkness"
-		"Ability5"					"attribute_bonus_str"				
+		"Ability1"					"imba_night_stalker_void"
+		"Ability2"					"imba_night_stalker_crippling_fear"
+		"Ability3"					"imba_night_stalker_hunter_in_the_night"
+		"Ability4"					"imba_night_stalker_darkness"
+		"Ability5"					"attribute_bonus_str"
+
+		"VisionNighttimeRange"		"2400"
 	}
 
 	//=================================================================================================================
@@ -318,10 +320,9 @@
 		"AttributeBaseIntelligence"	"21"
 		"AttributeIntelligenceGain"	"2.25"
 
-	//	"Ability1"					"imba_nyx_assassin_impale"
-	//	"Ability2"					"imba_nyx_assassin_mana_burn"
-	//	"Ability3"					"imba_nyx_assassin_spiked_carapace"
-	//	"Ability4"					"imba_nyx_assassin_vendetta"
+		"Ability1"					"imba_nyx_assassin_impale"
+		"Ability3"					"imba_nyx_assassin_spiked_carapace"
+		"Ability4"					"imba_nyx_assassin_vendetta"
 		"Ability5"					"attribute_bonus_int"				
 	}
 
@@ -337,10 +338,10 @@
 
 		"AttackRange"				"525"
 
-	//	"Ability1"					"imba_obsidian_destroyer_arcane_orb"
-	//	"Ability2"					"imba_obsidian_destroyer_astral_imprisonment"
-	//	"Ability3"					"imba_obsidian_destroyer_essence_aura"
-	//	"Ability4"					"imba_obsidian_destroyer_sanity_eclipse"
+		"Ability1"					"imba_obsidian_destroyer_arcane_orb"
+		"Ability2"					"imba_obsidian_destroyer_astral_imprisonment"
+		"Ability3"					"imba_obsidian_destroyer_essence_aura"
+		"Ability4"					"imba_obsidian_destroyer_sanity_eclipse"
 		"Ability5"					"attribute_bonus_int"				
 	}
 
@@ -351,10 +352,10 @@
 	{
 		"override_hero"				"npc_dota_hero_omniknight"
 
-	//	"Ability1"					"imba_omniknight_purification"
-	//	"Ability2"					"imba_omniknight_repel"
-	//	"Ability3"					"imba_omniknight_degen_aura"
-	//	"Ability4"					"imba_omniknight_guardian_angel"
+		"Ability1"					"imba_omniknight_purification"
+		"Ability2"					"imba_omniknight_repel"
+		"Ability3"					"imba_omniknight_degen_aura"
+		"Ability4"					"imba_omniknight_guardian_angel"
 		"Ability5"					"attribute_bonus_str"				
 	}
 
@@ -367,10 +368,10 @@
 
 		"AttackRate"				"1.5"
 
-	//	"Ability1"					"imba_phantom_assassin_stifling_dagger"
-	//	"Ability2"					"imba_phantom_assassin_phantom_strike"
-	//	"Ability3"					"imba_phantom_assassin_blur"
-	//	"Ability4"					"imba_phantom_assassin_coup_de_grace"
+		"Ability1"					"imba_phantom_assassin_stifling_dagger"
+		"Ability2"					"imba_phantom_assassin_phantom_strike"
+		"Ability3"					"imba_phantom_assassin_blur"
+		"Ability4"					"imba_phantom_assassin_coup_de_grace"
 		"Ability5"					"attribute_bonus_agi"				
 	}
 

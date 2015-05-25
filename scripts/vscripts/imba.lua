@@ -2,7 +2,7 @@
 
 ENABLE_HERO_RESPAWN = true              -- Should the heroes automatically respawn on a timer or stay dead until manually respawned
 UNIVERSAL_SHOP_MODE = false             -- Should the main shop contain Secret Shop items as well as regular items
-ALLOW_SAME_HERO_SELECTION = false       -- Should we let people select the same hero as each other
+ALLOW_SAME_HERO_SELECTION = true       -- Should we let people select the same hero as each other
 
 HERO_SELECTION_TIME = 60.0             	-- How long should we let people select their hero?
 PRE_GAME_TIME = 90.0                   	-- How long after people select their heroes should the horn blow and the game start?
@@ -444,24 +444,26 @@ function GameMode:OnEntityKilled( keys )
 				GameRules:SetGameWinner( DOTA_TEAM_GOODGUYS )
 			end
 			-- Hero kill and assist bounty
-			local allies = FindUnitsInRadius(killerEntity:GetTeam(), killedUnit:GetAbsOrigin(), nil, 1300, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, 0, 0, false)
-			local killer_bounty = 100 + killedUnit:GetLevel() * 10
-			local assist_bounty
-			if #allies == 1 then
-				assist_bounty = 140 + killedUnit:GetLevel() * 7
-			elseif #allies == 2 then
-				assist_bounty = 110 + killedUnit:GetLevel() * 6
-			elseif #allies == 3 then
-				assist_bounty = 90 + killedUnit:GetLevel() * 5
-			elseif #allies == 4 then
-				assist_bounty = 70 + killedUnit:GetLevel() * 4
-			else
-				assist_bounty = 60 + killedUnit:GetLevel() * 3
-			end
+			if killerEntity:IsHero() then
+				local allies = FindUnitsInRadius(killerEntity:GetTeam(), killedUnit:GetAbsOrigin(), nil, 1300, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, 0, 0, false)
+				local killer_bounty = 100 + killedUnit:GetLevel() * 10
+				local assist_bounty
+				if #allies == 1 then
+					assist_bounty = 140 + killedUnit:GetLevel() * 7
+				elseif #allies == 2 then
+					assist_bounty = 110 + killedUnit:GetLevel() * 6
+				elseif #allies == 3 then
+					assist_bounty = 90 + killedUnit:GetLevel() * 5
+				elseif #allies == 4 then
+					assist_bounty = 70 + killedUnit:GetLevel() * 4
+				else
+					assist_bounty = 60 + killedUnit:GetLevel() * 3
+				end
 
-			killerEntity:ModifyGold(killer_bounty, true, 0)
-			for _,ally in pairs(allies) do
-				ally:ModifyGold(assist_bounty, true, 0)
+				killerEntity:ModifyGold(killer_bounty, true, 0)
+				for _,ally in pairs(allies) do
+					ally:ModifyGold(assist_bounty, true, 0)
+				end
 			end
 
 		elseif killedUnit:GetTeam() == DOTA_TEAM_GOODGUYS and killerEntity:GetTeam() == DOTA_TEAM_BADGUYS then
@@ -472,24 +474,26 @@ function GameMode:OnEntityKilled( keys )
 			end
 
 			-- Hero kill and assist bounty
-			local allies = FindUnitsInRadius(killerEntity:GetTeam(), killedUnit:GetAbsOrigin(), nil, 1300, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, 0, 0, false)
-			local killer_bounty = 100 + killedUnit:GetLevel() * 10
-			local assist_bounty
-			if #allies == 1 then
-				assist_bounty = 140 + killedUnit:GetLevel() * 7
-			elseif #allies == 2 then
-				assist_bounty = 110 + killedUnit:GetLevel() * 6
-			elseif #allies == 3 then
-				assist_bounty = 90 + killedUnit:GetLevel() * 5
-			elseif #allies == 4 then
-				assist_bounty = 70 + killedUnit:GetLevel() * 4
-			else
-				assist_bounty = 60 + killedUnit:GetLevel() * 3
-			end
+			if killerEntity:IsHero() then
+				local allies = FindUnitsInRadius(killerEntity:GetTeam(), killedUnit:GetAbsOrigin(), nil, 1300, DOTA_UNIT_TARGET_TEAM_FRIENDLY, DOTA_UNIT_TARGET_HERO, 0, 0, false)
+				local killer_bounty = 100 + killedUnit:GetLevel() * 10
+				local assist_bounty
+				if #allies == 1 then
+					assist_bounty = 140 + killedUnit:GetLevel() * 7
+				elseif #allies == 2 then
+					assist_bounty = 110 + killedUnit:GetLevel() * 6
+				elseif #allies == 3 then
+					assist_bounty = 90 + killedUnit:GetLevel() * 5
+				elseif #allies == 4 then
+					assist_bounty = 70 + killedUnit:GetLevel() * 4
+				else
+					assist_bounty = 60 + killedUnit:GetLevel() * 3
+				end
 
-			killerEntity:ModifyGold(killer_bounty, true, 0)
-			for _,ally in pairs(allies) do
-				ally:ModifyGold(assist_bounty, true, 0)
+				killerEntity:ModifyGold(killer_bounty, true, 0)
+				for _,ally in pairs(allies) do
+					ally:ModifyGold(assist_bounty, true, 0)
+				end
 			end
 		end
 
@@ -854,7 +858,7 @@ function GameMode:CaptureGameMode()
 		mode:SetCustomHeroMaxLevel ( MAX_LEVEL )
 		mode:SetCustomXPRequiredToReachNextLevel( XP_PER_LEVEL_TABLE )
 
-		mode:SetBotThinkingEnabled( USE_STANDARD_DOTA_BOT_THINKING )
+		--mode:SetBotThinkingEnabled( USE_STANDARD_DOTA_BOT_THINKING )
 		mode:SetTowerBackdoorProtectionEnabled( ENABLE_TOWER_BACKDOOR_PROTECTION )
 
 		mode:SetFogOfWarDisabled(DISABLE_FOG_OF_WAR_ENTIRELY)
